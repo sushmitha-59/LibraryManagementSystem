@@ -1,6 +1,7 @@
 package com.example.minor_project.model;
 
 import com.example.minor_project.DTO.AdminResponse;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,10 +26,12 @@ public class Admin {
     //admin:transaction = 1:n , so create a list to save those n transactions
     //we have to give variable we are using in transaction table for admin object for mapping
     @OneToMany(mappedBy = "admin")
+    @JsonIgnore
     private List<Transaction> transaction_list;
 
     @OneToOne
     @JoinColumn
+    @JsonIgnore
     private Users user;
 
     @CreationTimestamp

@@ -15,6 +15,7 @@ public class Constants {
 
     //BOTH BY STUDENT AND ADMIN
     public static final String READ_BOOK="READ_BOOK";
+    public static final String UPLOAD_CSV = "UPLOAD_THROUGH_CSV";
     public static String DELIMITER="::";
     public static String STUDENT_USER="student";
     public static String ADMIN_USER="admin";

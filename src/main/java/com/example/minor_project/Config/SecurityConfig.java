@@ -51,6 +51,7 @@ public class SecurityConfig {
                     .requestMatchers("/student/listAll", "/student/search", "/student/search2", "/student/delete/**", "/student/update/**").hasAuthority(Constants.ADMIN_AUTHORITY_FOR_STUDENT)
                     .requestMatchers(HttpMethod.POST, "/student/create").permitAll()  //for only authenticated people
                     .requestMatchers("/transaction/initiate").hasAuthority(Constants.INITIATE_TRANSACTION)
+                    .requestMatchers("/csv/upload").hasAuthority(Constants.UPLOAD_CSV)
                 )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())

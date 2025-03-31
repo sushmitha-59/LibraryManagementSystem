@@ -23,7 +23,8 @@ public class AuthoritiesProvider {
                     Constants.CREATE_BOOK,
                     Constants.DELETE_BOOK,
                     Constants.UPDATE_BOOK,
-                    Constants.ADMIN_AUTHORITY_FOR_STUDENT
+                    Constants.ADMIN_AUTHORITY_FOR_STUDENT,
+                    Constants.UPLOAD_CSV
             );
 
             String adminAuthoritiesAsString = String.join(Constants.DELIMITER, adminAuthorities);

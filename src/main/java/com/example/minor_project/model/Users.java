@@ -1,6 +1,7 @@
 package com.example.minor_project.model;
 
 import com.example.minor_project.Utilities.Constants;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,9 +25,11 @@ public class Users implements UserDetails , Serializable {
 
     //for checking which user got logged in
     @OneToOne(mappedBy = "user")
+    @JsonIgnore
     private Student student;
 
     @OneToOne(mappedBy = "user")
+    @JsonIgnore
     private Student admin;
 
     @Override

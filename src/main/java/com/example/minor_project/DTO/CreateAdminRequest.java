@@ -15,7 +15,7 @@ public class CreateAdminRequest {
     @Pattern(
             regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$"
     )
-    @NotBlank(message = "Invalid Gmail address.")
+    @NotBlank(message = "Invalid email address.")
     private String email;
     @NotBlank(message = "username cannot be empty.")
     private String username;

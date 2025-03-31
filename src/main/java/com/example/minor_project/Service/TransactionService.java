@@ -1,7 +1,10 @@
 package com.example.minor_project.Service;
 
 import com.example.minor_project.DTO.IssueTransactionRequest;
+import com.example.minor_project.DTO.StudentResponse;
+import com.example.minor_project.DTO.bookResponse;
 import com.example.minor_project.Repository.StudentIdCacheRepo;
+import com.example.minor_project.Repository.StudentRepo;
 import com.example.minor_project.Repository.TransactionDao;
 import com.example.minor_project.model.*;
 import jakarta.validation.Valid;
@@ -42,12 +45,12 @@ public class TransactionService {
     * check if book exists and not taken by anyone
     * if above everything is fine , then make entry in transaction table building new transaction object  as pending status and update the student , book
     */
-    private Student ValidateStudent(@NotBlank String studentId) {
+    private Student  ValidateStudent(@NotBlank String studentId) throws Exception {
         try{
-            return studentService.searchStudentByIdEmailRoll("id",studentId);
+            return studentService.findStudentFromDb(Integer.parseInt(studentId));
         }
         catch(Exception e){
-            return null;
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -62,14 +65,11 @@ public class TransactionService {
 
     private Book ValidateBook(@NotNull String  id) throws Exception {
         List<Book> books=bookService.getBook("id",id);
-        Book book=null;
-        if(books ==null){
+        if(books.isEmpty()){
             throw new Exception("Invalid book Id");
+        }else{
+            return books.get(0);
         }
-        else{
-            book= books.get(0);
-        }
-        return book;
     }
 
     public String IssueType(IssueTransactionRequest issueTransactionRequest) throws Exception{
@@ -145,14 +145,15 @@ public class TransactionService {
             throw new Exception("invalid Admin Id");
         }
         System.out.println("Admin is : " + admin.toString());
+
         //validate book
         Book book= ValidateBook(issueTransactionRequest.getBookId());
-        if(book==null){
-            throw new Exception("Invalid Book Id");
+        if(book ==null || book.getId()==null){
+            throw new Exception("Invalid book");
         }
         System.out.println("book is : " + book.toString());
 
-        //check if book is issued to student , if this condition is not checked then we can return book any number of times as it will return atleast one issue record
+        //check if book is issued to student , if this condition is not checked then we can return book any number of times as it will return at least one issue record
         if(book.getStudent()==null){
             throw new Exception("Book is already returned by " + student.getId().toString());
         }
@@ -178,9 +179,11 @@ public class TransactionService {
                     .TransactionId(UUID.randomUUID().toString())
                     .build();
             transactionDao.save(transaction);
+
             //unassign book to student ,and update the book in the database
             book.setStudent(null);
             bookService.CreateOrUpdateBook(book);
+
             //update the transaction status to success
             transaction.setTransactionStatus(MyTransactionStatus.SUCCESS);
             //delete the cache for the student

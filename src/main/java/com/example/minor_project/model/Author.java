@@ -1,10 +1,14 @@
 package com.example.minor_project.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Builder
 @Getter @Setter
@@ -17,6 +21,7 @@ public class Author {
     //author:book=1:n ,in book we have given author object and mapped column
     //here we have to use list to store those n books
     @OneToMany(mappedBy = "author")
+    @ToString.Exclude
     private List<Book> books;
 
     private String name;
@@ -29,11 +34,17 @@ public class Author {
 
     @Override
     public String toString() {
+        Map<Integer,String> books2=new HashMap<>();
+        if(this.getBooks() !=null){
+            for(Book Book:this.getBooks()){
+                books2.put(Book.getId(),Book.getName());
+            }
+        }
         return "author {"+
                 "id :"+this.id+"\"" +
                 " ,name : "+this.name+"\"" +
                 " ,email : "+this.email+"\"" +
-                " ,books : "+this.books+"\"" +
+                " ,books : "+books2.toString()+"\"" +
                 "}";
     }
 }

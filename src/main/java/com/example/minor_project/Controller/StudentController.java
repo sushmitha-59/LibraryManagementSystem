@@ -6,6 +6,7 @@ import com.example.minor_project.model.Users;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +31,12 @@ public class StudentController {
             stu.setMessage("Student got created successfully");
             return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(stu);
         } catch (Exception e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof DataIntegrityViolationException) {
+                throw (DataIntegrityViolationException) cause;
+            }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new StudentErrorResponse(e.getMessage())
+                    new StudentErrorResponse(e.getCause().getMessage())
             );
         }
     }
@@ -47,24 +52,23 @@ public class StudentController {
         return new SearchStudentResponse(students_list);
     }
 
-    //findbyId , findStudentbyemail , findStudentbyrollno ==>return single student
+    //findById , findStudentByEmail , findStudentByRollNo ==>return single student
     @PostMapping("/search")
-    public ResponseEntity<?> findBYIdEmailRollNumber(@RequestBody SearchStudentRequest studentRequest){
+    public ResponseEntity<?> findBYIdEmailRollNumber(@RequestBody @Valid SearchStudentRequest studentRequest){
         try {
-            Student student = studentService.searchStudentByIdEmailRoll(studentRequest.getSearchKey(),studentRequest.getSearchValue());
+            StudentResponse student = studentService.searchStudentByIdEmailRoll(studentRequest.getSearchKey(),studentRequest.getSearchValue());
             return ResponseEntity
                     .status(HttpStatus.FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(student.to());
+                    .body(student);
         } catch (Exception e) {
-            System.out.println("e is " + e );
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new StudentErrorResponse(e.getMessage())
+                    new StudentErrorResponse(e.getCause().getMessage())
             );
         }
     }
 
-    //findbyname , findbyage returns list of students
+    //findByName , findByAge returns list of students
     @GetMapping("/search2")
     public ResponseEntity<?> findByNameAge(@RequestParam  String searchKey,@RequestParam  String searchValue){
         try {
@@ -79,7 +83,7 @@ public class StudentController {
                     .body(new SearchStudentResponse(studentResponses));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new StudentErrorResponse(e.getMessage())
+                    new StudentErrorResponse(e.getCause().getMessage())
             );
         }
     }
@@ -98,10 +102,10 @@ public class StudentController {
         Integer id=user.getStudent().getId();
         System.out.println("user id is " +id);
         try {
-            Student student = studentService.searchStudentByIdEmailRoll("id", String.valueOf(id));
+            StudentResponse student = studentService.searchStudentByIdEmailRoll("id", String.valueOf(id));
             return ResponseEntity.status(HttpStatus.FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(student.to());
+                    .body(student);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new StudentErrorResponse(e.getMessage())

@@ -1,4 +1,5 @@
 package com.example.minor_project.Service;
+import com.example.minor_project.DTO.bookResponse;
 import com.example.minor_project.Repository.BookRepo;
 import com.example.minor_project.model.Author;
 import com.example.minor_project.model.Book;
@@ -66,7 +67,17 @@ public class BookService {
     public String deleteBook(Integer id){
         return book_repo.deleteBook(id);
     }
-    public List<Book> getAllBooks() {
-        return book_repo.findAll();
+
+    public List<bookResponse> getAllBooks() {
+        try{
+            List<Book> books=book_repo.findAll();
+            List<bookResponse> books2=new ArrayList<>();
+            for(Book book : books){
+                books2.add(book.to());
+            }
+            return  books2;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -6,8 +6,8 @@ import lombok.*;
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor @Builder
 public class SearchStudentRequest {
-    @NotBlank
+    @NotBlank(message = "searchKey should not be empty")
     private String searchKey;
-    @NotBlank
+    @NotBlank(message = "searchValue should not be empty")
     private String searchValue;
 }

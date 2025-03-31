@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -17,8 +18,8 @@ public class bookResponse {
     private Date updatedOn;
     private genre_enum genre;
     private Integer price;
-    private Student student;
+    private Integer studentId;
     private String authorName;
     private Integer authorId;
-    private List<Transaction> transactions;
+    private Map<String,String> transactions;
 }

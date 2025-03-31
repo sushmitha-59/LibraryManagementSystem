@@ -50,11 +50,7 @@ public class BookController {
     }
     @GetMapping("/getAll")
     public SearchBook_response  GetAllBook(){
-       List<Book> books = book_service.getAllBooks();
-       List<bookResponse> book_resp=new ArrayList<>();
-       for(Book book :books){
-           book_resp.add(book.to());
-       }
+       List<bookResponse> book_resp=book_service.getAllBooks();
        return new SearchBook_response(book_resp);
     }
     @DeleteMapping("/delete/{id}")

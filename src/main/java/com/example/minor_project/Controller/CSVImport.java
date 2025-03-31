@@ -21,7 +21,7 @@ public class CSVImport {
             Integer count=csvService.parseCSVAndSaveData(file.getInputStream(),entity);
             return ResponseEntity.status(HttpStatus.CREATED).body("CSV Files parsed and uploaded " + count + " records successfully");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to parse the CSV " + e.getMessage().toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to parse the CSV " + e.getMessage());
         }
     }
 }

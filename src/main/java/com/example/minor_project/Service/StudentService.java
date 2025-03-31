@@ -5,15 +5,14 @@ import com.example.minor_project.Repository.StudentRepo;
 import com.example.minor_project.Repository.TransactionDao;
 import com.example.minor_project.Repository.UserRepo;
 import com.example.minor_project.Utilities.Constants;
-import com.example.minor_project.model.Book;
 import com.example.minor_project.model.Student;
 import com.example.minor_project.model.Users;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.serializer.SerializationException;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StudentService {
@@ -57,45 +56,55 @@ public class StudentService {
         return studentRepo.findAll();
     }
 
+    public Student findStudentFromDb(Integer id) throws Exception{
+        try{
+            return studentRepo.findById(id).get();
+        }catch(Exception e){
+            throw new Exception("Student with id "+ id + " not found in db");
+        }
+    }
+
     //helper function to get student from cache , if not present in cache then DB
-    private Student findStudentByID(@NotBlank Integer id) throws Exception {
-        Student student=studentIdcacheRepo.getStudent(id);
+    public StudentResponse findStudentByID(@NotBlank Integer id) throws Exception {
+        StudentResponse student=studentIdcacheRepo.getStudent(id);
         if(student !=null){
             System.out.println("Getting Student from redis");
             return student;
         }
         else{
             try{
-                Optional<Student> stu=studentRepo.findById(id);
-                if(stu.isPresent()){
-                    student=stu.get();
-                    System.out.println("Getting Student from DB");
+                student=findStudentFromDb(id).to();
+                System.out.println("student is "+ student.toString());
+                System.out.println("Getting Student from DB");
+                try{
                     studentIdcacheRepo.setStudent(student);
-                    return student;
+                    System.out.println("saved in the redis");
+                }catch(SerializationException e){
+                    throw new Exception("Cannot serialize student object for redis service");
+                }catch(Exception e){
+                    throw new Exception(e.getMessage());
                 }
-                else{
-                    throw new Exception("Student with id "+id+"  not found ");
-                }
+                return student;
             }catch(Exception e){
-                throw new Exception("Student with id "+id+"  not found "+ e.getMessage());
+                throw new Exception(e.getMessage());
             }
         }
     }
 
 
-    public Student searchStudentByIdEmailRoll(@NotBlank String searchKey, @NotBlank String searchValue) throws Exception {
+    public StudentResponse searchStudentByIdEmailRoll(@NotBlank String searchKey, @NotBlank String searchValue) throws Exception {
         switch (searchKey) {
             case "id" :{
-                Student student=findStudentByID(Integer.parseInt(searchValue));
-                if(student==null ||(student !=null && student.getId()==null)){
+                StudentResponse student=findStudentByID(Integer.parseInt(searchValue));
+                if((student == null) || (student.getId() == null)){
                     throw new Exception("Invalid search value");
                 }
                 return student;
             }
             case "email" :
-                return studentRepo.findByEmail(searchValue);
+                return studentRepo.findByEmail(searchValue).to();
             case "rollNumber" :
-                return studentRepo.findByRollNumber(searchValue);
+                return studentRepo.findByRollNumber(searchValue).to();
             default:
                 try {
                     throw new Exception("Invalid search key");
@@ -127,26 +136,29 @@ public class StudentService {
     @Transactional
     public void deleteStudent(Integer id) throws Exception {
         //check if the student is valid or not
-        Student stu=findStudentByID(id);
+        StudentResponse stu=findStudentByID(id);
         System.out.println("Student is " + stu.toString());
         if(stu.getId() != null){
-            List<Book> books=stu.getBooks();
-            System.out.println("books by the student are " + stu.getBooks().toString());
-            if(!books.isEmpty()){
-                throw new Exception("Student is associated with books, please Return the books");
+            try {
+                if (!stu.getBooks().isEmpty()) {
+                    throw new Exception("Student is associated with books, please Return the books");
+                }
+                System.out.println("not books issue");
+                //delete all the related transactions
+                if (!stu.getTransactions().isEmpty()) {
+                    transactionDao.deleteByStudentId(id);
+                }
+                System.out.println("not transactions issue");
+                //delete user entry
+                userDao.deleteById(stu.getUserId());
+                System.out.println("not users issue");
+                //delete from cache if exists
+                studentIdcacheRepo.deleteStudent(id);
+
+                studentRepo.deleteById(id);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-            System.out.println("not books issue");
-            //delete all the related transactions
-            if(! stu.getTransactions().isEmpty() ){
-                transactionDao.deleteByStudentId(id);
-            }
-            System.out.println("not transactions issue");
-            //delete user entry
-            userDao.deleteById(stu.getUser().getId());
-            System.out.println("not users issue");
-            studentRepo.deleteById(id);
-            //delete from cache if exists
-            studentIdcacheRepo.deleteStudent(id);
         }
         else {
             throw new Exception("Cannot find the student");
@@ -154,7 +166,7 @@ public class StudentService {
     }
 
     public StudentResponse updateStudent(Integer id, String key, String value) throws Exception {
-        Student stu=findStudentByID(id);
+        Student stu=findStudentFromDb(id);
         System.out.println("Student is " + stu.toString());
         if(stu.getId() != null){
             switch (key){
@@ -172,7 +184,7 @@ public class StudentService {
             }
             //save the student
             studentRepo.save(stu);
-            studentIdcacheRepo.setStudent(stu); //save in the cache ,probability of them getting this data will be more to verify
+            studentIdcacheRepo.setStudent(stu.to()); //save in the cache ,probability of them getting this data will be more to verify
             return stu.to();
         }
         else {

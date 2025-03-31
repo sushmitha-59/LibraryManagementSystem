@@ -29,12 +29,12 @@ public class AdminController {
             Adminservice.CreateAdmin(create_admin_dto.to());
             return ResponseEntity.status(HttpStatus.CREATED).body("Admin got created/updated successfully");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getCause().getMessage());
         }
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<AdminResponse>> getAllAdmins(){
+    public ResponseEntity<?> getAllAdmins(){
         List<AdminResponse> adminResponses=new ArrayList<>();
         try{
             List<Admin> admins=Adminservice.getAllAdmin();
@@ -46,7 +46,7 @@ public class AdminController {
                     .body(adminResponses);
         }catch(Exception e){
             log.error("Admin get All requests failure : {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(adminResponses);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getCause().getMessage());
         }
     }
     @GetMapping("/get")
@@ -56,8 +56,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.FOUND).contentType(MediaType.APPLICATION_JSON)
                     .body(admin.to());
         } catch (Exception e) {
-            log.error("Admin get request failed : " +e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Admin get request failed : " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Admin get request failed : " + e.getCause().getMessage());
         }
     }
 }

@@ -1,22 +1,23 @@
 package com.example.minor_project.DTO;
 
-import com.example.minor_project.model.Book;
-import com.example.minor_project.model.Transaction;
 import lombok.*;
+
+import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor @NoArgsConstructor
 @Getter @Setter @Builder @ToString
-public class StudentResponse {
+public class StudentResponse implements Serializable {
     private Integer id;
-    private List<Book> books;
-    private List<Transaction> transactions;
+    private Map<Integer,String> books;
+    private Map<String,String> transactions;
     private Integer age;
     private String name;
     private String roll_number;
     private String email;
     private Date CreatedOn;
     private Date UpdatedOn;
+    private Integer userId;
     private String message;
 }

@@ -6,21 +6,24 @@ import com.example.minor_project.model.genre_enum;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
 public class CreateBookRequest {
-    @NotBlank
+    @NotBlank(message = "name cannot be empty.")
     @Column(unique = true,nullable = false)
     private String name;
-    @NotNull
+    @NotNull(message = "genre cannot be empty.")
     private genre_enum genre;
-    @NotNull
     private Integer price;
-    @NotBlank
+    @NotBlank(message = "author_name cannot be empty.")
     private String author_name;
-    @NotBlank
+    @Pattern(
+            regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$"
+    )
+    @NotBlank(message = "Invalid email address.")
     private String author_email;
 
     public Book to(){

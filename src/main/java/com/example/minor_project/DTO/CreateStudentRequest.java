@@ -2,7 +2,9 @@ package com.example.minor_project.DTO;
 
 import com.example.minor_project.model.Student;
 import com.example.minor_project.model.Users;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 
@@ -10,16 +12,21 @@ import lombok.*;
 @Getter @Setter
 @Builder @ToString
 public class CreateStudentRequest {
+    @Min(value = 10,message = "Age should be more than 10")
     private Integer age;
-    @NotBlank
+    @NotBlank(message = "Name should not be blank.")
     private String name;
-    @NotBlank
+    @NotBlank(message = "rollNumber should not be blank.")
     private String rollNumber;
-    @NotBlank
+    @NotBlank(message = "password should not be blank.")
     private String password;
-    @NotBlank
+    @Pattern(
+            regexp = "^[a-zA-Z0-9._%+-]+@gmail\\.com$",
+            message = "Invalid email format. Please enter a valid Gmail address ending with @gmail.com"
+    )
+    @NotBlank(message = "Email should not be blank.")
     private String email;
-    @NotBlank
+    @NotBlank(message = "UserName should not be blank.")
     private String username;
     public Student to(){
         return Student.builder()
