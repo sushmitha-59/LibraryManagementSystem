@@ -1,15 +1,17 @@
-A comprehensive Library Management System built using Java Spring Boot. This application provides functionality to manage books, students, transactions, and admin operations.
+***A comprehensive Library Management System built using Java Spring Boot. This application provides functionality to manage books, students, transactions, and admin operations.***
 
-Main Features
-Student Registration and Management
-Book Management (Add, Update, Delete, Search)
-Book Issuance and Return Management
-Admin Management
-Transaction Management
-Redis Caching for Student Data
-Spring Security for Authentication and Authorization
-Global Exception Handling
+**Main Features**
+- Student Registration and Management
+- Book Management (Add, Update, Delete, Search)
+- Book Issuance and Return Management
+- Admin Management
+- Transaction Management
+- Redis Caching for Student Data
+- Spring Security for Authentication and Authorization
+- Global Exception Handling
 
+**Project Structure**
+```
 Library-Management-System/
 ├── src/
 │   ├── main/
@@ -25,61 +27,46 @@ Library-Management-System/
 │   │   │   ├── application.properties
 ├── .gitignore
 ├── README.md
-├── pom.xml 
+├── pom.xml
+```
 
-User Management
+**User Management**
+- Implemented User Registration and Login using Spring Security.
+- Support for multiple user roles (Admin and Student).
+- Secure password storage using BCrypt.
 
-**  Implemented User Registration and Login using Spring Security.**
-Support for multiple user roles (Admin and Student).
+**Book Management**
+- Admins can add, update, delete, and view books.
+- Students can view available books.
 
-3.Secure password storage using BCrypt.
+**Student Management**
+- CRUD operations for student records.
+- Students can view their profile and issued books.
 
-Book Management
+**Transaction Management**
+- Issue and return books.
+- Maintain a record of transactions.
 
-1.Admins can add, update, delete, and view books.
+**Validation and Error Handling**
+- Used Spring Boot’s @Valid and @Pattern annotations for input validation.
+- Implemented Global Exception Handling to return meaningful error messages.
 
-2.Students can view available books.
+**Database Management**
+- Utilized MySQL with JPA (Java Persistence API) and Hibernate for database operations.
+- Established one-to-many and one-to-one relationships for effective data management.
 
-Student Management
+**Caching**
+- Integrated Redis for caching frequently accessed data like student and book details.
 
-1.CRUD operations for student records.
-
-2.Students can view their profile and issued books.
-
-Transaction Management
-
-1.Issue and return books .
-
-2.Maintain a record of transactions.
-
-
-Validation and Error Handling
-
-Used Spring Boot’s @Valid and @Pattern annotations for input validation.
-
-Implemented Global Exception Handling to return meaningful error messages.
-
-Database Management
-
-Utilized MySQL with JPA (Java Persistence API) and Hibernate for database operations.
-
-Established one-to-many and one-to-one relationships for effective data management.
-
-Caching
-
-Integrated Redis for caching frequently accessed data like student and book details.
-
-Security
-
-Secured endpoints using Spring Security with role-based access control.
-
+**Security**
+- Secured endpoints using Spring Security with role-based access control.
 
 ⚙️ Tech Stack
-Backend: Spring Boot, Spring Security
-Database: MySQL
-Caching: Redis
-ORM: Hibernate
-Validation: Spring Boot Validation
-Logging: SLF4J
-API Testing: Postman
-Version Control: Git & GitHub
+- Backend: Spring Boot, Spring Security
+- Database: MySQL
+- Caching: Redis
+- ORM: Hibernate
+- Validation: Spring Boot Validation
+- Logging: SLF4J
+- API Testing: Postman
+- Version Control: Git & GitHub
