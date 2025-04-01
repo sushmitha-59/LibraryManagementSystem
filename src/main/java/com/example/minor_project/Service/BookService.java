@@ -1,15 +1,21 @@
 package com.example.minor_project.Service;
 import com.example.minor_project.DTO.bookResponse;
 import com.example.minor_project.Repository.BookRepo;
+import com.example.minor_project.Utilities.Constants;
 import com.example.minor_project.model.Author;
 import com.example.minor_project.model.Book;
 import com.example.minor_project.model.genre_enum;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookService {
@@ -70,10 +76,29 @@ public class BookService {
 
     public List<bookResponse> getAllBooks() {
         try{
+            Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
+            if(authentication ==null){
+                throw new Exception("USER is not authenticated.");
+            }
+            Collection<? extends GrantedAuthority> authorities=authentication.getAuthorities();
             List<Book> books=book_repo.findAll();
             List<bookResponse> books2=new ArrayList<>();
-            for(Book book : books){
-                books2.add(book.to());
+            List<String> authorities2=authorities.stream()
+                    .map((GrantedAuthority)->GrantedAuthority.getAuthority())
+                    .collect(Collectors.toUnmodifiableList());
+            if(authorities2.contains(Constants.ADMIN_BOOKS_VIEW)){
+                System.out.println("admin view");
+                for(Book book : books){
+                    books2.add(book.to());
+                }
+            }
+            else{
+                for(Book book : books){
+                    System.out.println("student view");
+                    if(book.getStudent()==null ){
+                        books2.add(book.to());
+                    }
+                }
             }
             return  books2;
         } catch (Exception e) {

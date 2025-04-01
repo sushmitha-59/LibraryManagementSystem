@@ -89,18 +89,16 @@ public class StudentController {
     }
 
     @GetMapping("/info")
-    public ResponseEntity<?> student_self_info(){
+    public ResponseEntity<?> student_self_info() throws Exception {
         //security context holder contains current user current session details
         System.out.println("Starting info endpoint");
         Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
         if(authentication ==null){
-            System.out.println("Authentication is null ");
+            throw new Exception("USER is not authenticated. ");
         }
         System.out.println("Authentication is " +authentication.toString());
         Users user=(Users) authentication.getPrincipal();
-        System.out.println("user is " +user.toString());
         Integer id=user.getStudent().getId();
-        System.out.println("user id is " +id);
         try {
             StudentResponse student = studentService.searchStudentByIdEmailRoll("id", String.valueOf(id));
             return ResponseEntity.status(HttpStatus.FOUND)
