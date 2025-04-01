@@ -1,83 +1,134 @@
-package com.example.minor_project.Service;
-import com.example.minor_project.DTO.bookResponse;
-import com.example.minor_project.Repository.BookRepo;
-import com.example.minor_project.model.Author;
-import com.example.minor_project.model.Book;
-import com.example.minor_project.model.genre_enum;
-import jakarta.validation.constraints.NotBlank;
+package com.example.minor_project.Controller;
+import com.example.minor_project.DTO.*;
+import com.example.minor_project.Service.StudentService;
+import com.example.minor_project.model.Student;
+import com.example.minor_project.model.Users;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-@Service
-public class BookService {
+@Slf4j
+@RestController
+@RequestMapping("/student")
+public class StudentController {
+
     @Autowired
-    private BookRepo book_repo;
-    @Autowired
-    private AuthorService author_service;
+    private StudentService studentService;
 
-    public Book CreateOrUpdateBook(Book book){
-        //while creating a book , first we have to check if the corresponding author exists , if not we should add him
-        Author author=author_service.getOrCreateAuthor(book.getAuthor());
-        book.setAuthor(author);
-        return book_repo.save(book);
-    }
-
-    public List<Book> getBook(@NotBlank String searchKey, @NotBlank String searchValue) throws  Exception{
-        List<Book> books=new ArrayList<>();
-        switch(searchKey) {
-            case "name":
-                try{
-                    books= book_repo.findByName(searchValue);
-                    return books;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            case "genre":
-                try{
-                    books= book_repo.findByGenre(genre_enum.valueOf(searchValue));
-                    return books;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            case "authorName":
-                try{
-                    books= book_repo.findByAuthor_name(searchValue);
-                    return books;
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            case "id": {
-                Optional<Book> book = book_repo.findById(Integer.parseInt(searchValue));
-                if (book.isEmpty()) {
-                    throw new Exception("cannot find book with id :  " + searchValue);
-                }
-                else{
-                    books.add(book.get());
-                    return books;
-                }
+    @PostMapping("/create")
+    public ResponseEntity<?> createStudent(@RequestBody @Valid CreateStudentRequest createStudent_dto){
+        try{
+            StudentResponse stu=studentService.createStudent(createStudent_dto.to()).to();
+            stu.setMessage("Student got created successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(stu);
+        } catch (Exception e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof DataIntegrityViolationException) {
+                throw (DataIntegrityViolationException) cause;
             }
-            default:
-                throw new Exception("Invalid Search key : " + searchKey);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new StudentErrorResponse(e.getCause().getMessage())
+            );
         }
     }
 
-    public String deleteBook(Integer id){
-        return book_repo.deleteBook(id);
+    //only admin can do this
+    @GetMapping("/listAll")
+    public SearchStudentResponse getALLStudents(){
+        List<Student> students=studentService.getALlStudents();
+        List<StudentResponse> students_list=new ArrayList<StudentResponse>();
+        for(Student student : students){
+            students_list.add(student.to());
+        }
+        return new SearchStudentResponse(students_list);
     }
 
-    public List<bookResponse> getAllBooks() {
-        try{
-            List<Book> books=book_repo.findAll();
-            List<bookResponse> books2=new ArrayList<>();
-            for(Book book : books){
-                books2.add(book.to());
-            }
-            return  books2;
+    //findById , findStudentByEmail , findStudentByRollNo ==>return single student
+    @PostMapping("/search")
+    public ResponseEntity<?> findBYIdEmailRollNumber(@RequestBody @Valid SearchStudentRequest studentRequest){
+        try {
+            StudentResponse student = studentService.searchStudentByIdEmailRoll(studentRequest.getSearchKey(),studentRequest.getSearchValue());
+            return ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(student);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new StudentErrorResponse(e.getCause().getMessage())
+            );
+        }
+    }
+
+    //findByName , findByAge returns list of students
+    @GetMapping("/search2")
+    public ResponseEntity<?> findByNameAge(@RequestParam  String searchKey,@RequestParam  String searchValue){
+        try {
+            List<Student> students =studentService.searchStudentByNameAge(searchKey,searchValue);
+            List<StudentResponse> studentResponses=new ArrayList<StudentResponse>();
+            for(Student student : students){
+                studentResponses.add(student.to());
+            }
+            return ResponseEntity
+                    .status(HttpStatus.FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(new SearchStudentResponse(studentResponses));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new StudentErrorResponse(e.getCause().getMessage())
+            );
+        }
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<?> student_self_info() throws Exception {
+        //security context holder contains current user current session details
+        System.out.println("Starting info endpoint");
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        if(authentication ==null){
+            throw new Exception("USER is not authenticated. ");
+        }
+        System.out.println("Authentication is " +authentication.toString());
+        Users user=(Users) authentication.getPrincipal();
+        Integer id=user.getStudent().getId();
+        try {
+            StudentResponse student = studentService.searchStudentByIdEmailRoll("id", String.valueOf(id));
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(student);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new StudentErrorResponse(e.getMessage())
+            );
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteStudent(@PathVariable String id){
+        try{
+            studentService.deleteStudent(Integer.parseInt(id));
+            return ResponseEntity.status(HttpStatus.OK).body("Student got deleted successfully");
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+    }
+
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<String> updateStudent(@PathVariable String id , @RequestParam String key ,@RequestParam String value ){
+        try{
+            studentService.updateStudent(Integer.valueOf(id),key,value);
+            return ResponseEntity.status(HttpStatus.OK).body("Student got Updated successfully");
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }
