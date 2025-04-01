@@ -4,7 +4,7 @@ public class Constants {
 
     //ONLY STUDENT AUTHORITIES
     public static final String STUDENT_SELF_INFO_AUTHORITY="STUDENT_SELF_INFO";
-
+    public static final String STUDENT_BOOKS_VIEW="ONLY_AVAILABLE_BOOKS";
     //ONLY ADMIN AUTHORITIES
     public static final String ADMIN_AUTHORITY_FOR_STUDENT ="STUDENT_INFO";
     public static final String CREATE_ADMIN="READ_ADMIN";
@@ -12,9 +12,8 @@ public class Constants {
     public static final String UPDATE_BOOK="UPDATE_BOOK";
     public static final String DELETE_BOOK="DELETE_BOOK";
     public static final String INITIATE_TRANSACTION="INITIATE_TRANSACTION";
-
+    public static final String ADMIN_BOOKS_VIEW="ALL_BOOKS";
     //BOTH BY STUDENT AND ADMIN
-    public static final String READ_BOOK="READ_BOOK";
     public static final String UPLOAD_CSV = "UPLOAD_THROUGH_CSV";
     public static String DELIMITER="::";
     public static String STUDENT_USER="student";
