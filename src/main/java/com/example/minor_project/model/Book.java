@@ -1,6 +1,5 @@
 package com.example.minor_project.model;
 import com.example.minor_project.DTO.bookResponse;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
