@@ -13,18 +13,18 @@ public class AuthoritiesProvider {
             authoritiesMap = new HashMap<>();
             List<String> studentAuthorities = Arrays.asList(
                     Constants.STUDENT_SELF_INFO_AUTHORITY,
-                    Constants.READ_BOOK
+                    Constants.STUDENT_BOOKS_VIEW
             );
 
             List<String> adminAuthorities = Arrays.asList(
                     Constants.CREATE_ADMIN,
-                    Constants.READ_BOOK,
                     Constants.INITIATE_TRANSACTION,
                     Constants.CREATE_BOOK,
                     Constants.DELETE_BOOK,
                     Constants.UPDATE_BOOK,
                     Constants.ADMIN_AUTHORITY_FOR_STUDENT,
-                    Constants.UPLOAD_CSV
+                    Constants.UPLOAD_CSV,
+                    Constants.ADMIN_BOOKS_VIEW
             );
 
             String adminAuthoritiesAsString = String.join(Constants.DELIMITER, adminAuthorities);
