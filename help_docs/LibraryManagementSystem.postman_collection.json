@@ -575,19 +575,53 @@
 					"response": []
 				},
 				{
-					"name": "localhost:8080/book/getAll",
+					"name": "getALL Admin",
 					"request": {
 						"auth": {
 							"type": "basic",
 							"basic": [
 								{
-									"key": "username",
-									"value": "bsushmitha123",
+									"key": "password",
+									"value": "123456",
 									"type": "string"
 								},
 								{
+									"key": "username",
+									"value": "Admin1",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/book/getAll",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"book",
+								"getAll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get Only Available books",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
 									"key": "password",
 									"value": "1234",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "bsushmitha123",
 									"type": "string"
 								}
 							]

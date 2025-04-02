@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+docs/*
+# But keep the directory by allowing a dummy file
+!docs/.gitkeep
