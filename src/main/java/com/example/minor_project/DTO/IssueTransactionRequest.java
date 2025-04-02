@@ -1,15 +1,15 @@
 package com.example.minor_project.DTO;
-import com.example.minor_project.model.*;
+
+import com.example.minor_project.model.TransactionType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.Builder;
+import lombok.*;
 
-@Getter @Setter
-@AllArgsConstructor @NoArgsConstructor @Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class IssueTransactionRequest {
     @NotBlank
     private String studentId;

@@ -26,16 +26,16 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userrepo.findByUsername(username);
     }
 
-    public Users SaveUser(String userType, Users user){
+    public Users SaveUser(String userType, Users user) {
         //first hash the password
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         //set the authorities for the corresponding usertype
 
         String authorities = AuthoritiesProvider.getAuthorities(userType);
-        if(authorities== null){
+        if (authorities == null) {
             throw new RuntimeException("Authorities are null");
         }
-        if(authorities.equals(Constants.INVALID_USER)){
+        if (authorities.equals(Constants.INVALID_USER)) {
             throw new RuntimeException("Invalid for userType " + userType);
         }
 

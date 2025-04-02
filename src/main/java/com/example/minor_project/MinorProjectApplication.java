@@ -14,45 +14,45 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MinorProjectApplication implements CommandLineRunner {
 
-	@Autowired
-	public AdminRepo adminRepo;
-	@Autowired
-	public CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    public AdminRepo adminRepo;
+    @Autowired
+    public CustomUserDetailsService customUserDetailsService;
 
-	@Value("${Admin.user.username}")
-	private String Username;
+    @Value("${Admin.user.username}")
+    private String Username;
 
-	@Value("${Admin.user.password}")
-	private String password;
-	@Value("${Admin.user.email}")
-	private String email;
+    @Value("${Admin.user.password}")
+    private String password;
+    @Value("${Admin.user.email}")
+    private String email;
 
 
-	public static void main(String[] args) {
-		SpringApplication.run(MinorProjectApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MinorProjectApplication.class, args);
+    }
 
-	@Override
-	public void run(String... args) throws Exception {
-		Admin admin= adminRepo.findByEmail(this.email);
+    @Override
+    public void run(String... args) throws Exception {
+        Admin admin = adminRepo.findByEmail(this.email);
 
-		if(admin ==null){
-			admin=Admin.builder()
-				.email(this.email)
-				.name(this.Username)
-				.user(
-					Users.builder()
-						.username(this.Username)
-						.password(this.password)
-						.build()
-				)
-				.build();
+        if (admin == null) {
+            admin = Admin.builder()
+                    .email(this.email)
+                    .name(this.Username)
+                    .user(
+                            Users.builder()
+                                    .username(this.Username)
+                                    .password(this.password)
+                                    .build()
+                    )
+                    .build();
 
-			Users user=customUserDetailsService.SaveUser(Constants.ADMIN_USER,admin.getUser());
-			admin.setUser(user);
-			adminRepo.save(admin);
-		}
-	}
+            Users user = customUserDetailsService.SaveUser(Constants.ADMIN_USER, admin.getUser());
+            admin.setUser(user);
+            adminRepo.save(admin);
+        }
+    }
 //for every application there should be an admin
 // spring will create above admin if not present , after creating every beans
 }

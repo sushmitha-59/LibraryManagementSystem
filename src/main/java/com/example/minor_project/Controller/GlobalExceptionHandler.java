@@ -22,6 +22,7 @@ public class GlobalExceptionHandler {
         }
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         if (ex.getRootCause() != null) {
@@ -29,7 +30,7 @@ public class GlobalExceptionHandler {
             if (rootMessage.contains("Duplicate entry")) {
                 return new ResponseEntity<>("Error: " + rootMessage.split("for key")[0].trim(), HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<>( "Database Error: " + rootMessage, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Database Error: " + rootMessage, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }

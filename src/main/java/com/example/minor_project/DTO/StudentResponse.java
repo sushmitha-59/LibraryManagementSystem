@@ -6,12 +6,16 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
-@AllArgsConstructor @NoArgsConstructor
-@Getter @Setter @Builder @ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
+@ToString
 public class StudentResponse implements Serializable {
     private Integer id;
-    private Map<Integer,String> books;
-    private Map<String,String> transactions;
+    private Map<Integer, String> books;
+    private Map<String, String> transactions;
     private Integer age;
     private String name;
     private String roll_number;

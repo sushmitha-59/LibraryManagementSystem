@@ -1,18 +1,20 @@
 package com.example.minor_project.model;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Builder
-@Getter @Setter
-@AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Author {
     @Id
@@ -25,7 +27,7 @@ public class Author {
     private List<Book> books;
 
     private String name;
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String email;
     @CreationTimestamp
     private Date CreatedOn;
@@ -34,17 +36,17 @@ public class Author {
 
     @Override
     public String toString() {
-        Map<Integer,String> books2=new HashMap<>();
-        if(this.getBooks() !=null){
-            for(Book Book:this.getBooks()){
-                books2.put(Book.getId(),Book.getName());
+        Map<Integer, String> books2 = new HashMap<>();
+        if (this.getBooks() != null) {
+            for (Book Book : this.getBooks()) {
+                books2.put(Book.getId(), Book.getName());
             }
         }
-        return "author {"+
-                "id :"+this.id+"\"" +
-                " ,name : "+this.name+"\"" +
-                " ,email : "+this.email+"\"" +
-                " ,books : "+books2.toString()+"\"" +
+        return "author {" +
+                "id :" + this.id + "\"" +
+                " ,name : " + this.name + "\"" +
+                " ,email : " + this.email + "\"" +
+                " ,books : " + books2.toString() + "\"" +
                 "}";
     }
 }

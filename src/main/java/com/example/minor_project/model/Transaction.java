@@ -1,18 +1,21 @@
 package com.example.minor_project.model;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import java.util.Date;
 
-@Getter @Setter
-@AllArgsConstructor @NoArgsConstructor
-@Entity @Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Builder
 public class Transaction {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; //this will be the primary key
     private Integer fine;
     private String TransactionId; //we will make this as UUID
@@ -28,7 +31,7 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(name = "admin_id", referencedColumnName = "id")
     private Admin admin;
-    @Enumerated(value=EnumType.STRING)
+    @Enumerated(value = EnumType.STRING)
     private TransactionType transactionType;
     @Enumerated(value = EnumType.STRING)
     private MyTransactionStatus transactionStatus;

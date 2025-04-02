@@ -9,7 +9,7 @@ public class AuthoritiesProvider {
 
     public static String getAuthorities(String userType) {
 
-        if(authoritiesMap == null) {
+        if (authoritiesMap == null) {
             authoritiesMap = new HashMap<>();
             List<String> studentAuthorities = Arrays.asList(
                     Constants.STUDENT_SELF_INFO_AUTHORITY,

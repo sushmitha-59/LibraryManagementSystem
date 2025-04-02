@@ -15,10 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class CSVImport {
     @Autowired
     CSVService csvService;
+
     @PostMapping("/upload")
-    public ResponseEntity<String> csvUpload(@RequestParam("file")MultipartFile file , @RequestParam("entity") String entity ){
-        try{
-            Integer count=csvService.parseCSVAndSaveData(file.getInputStream(),entity);
+    public ResponseEntity<String> csvUpload(@RequestParam("file") MultipartFile file, @RequestParam("entity") String entity) {
+        try {
+            Integer count = csvService.parseCSVAndSaveData(file.getInputStream(), entity);
             return ResponseEntity.status(HttpStatus.CREATED).body("CSV Files parsed and uploaded " + count + " records successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to parse the CSV " + e.getMessage());
