@@ -6,8 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
-@AllArgsConstructor @NoArgsConstructor
-@Getter @Setter @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
 public class CreateAdminRequest {
 
     @NotBlank(message = "name cannot be empty.")
@@ -23,15 +26,15 @@ public class CreateAdminRequest {
     private String password;
 
 
-    public Admin to(){
+    public Admin to() {
         return Admin.builder()
                 .email(this.email)
                 .name(this.name)
                 .user(
-                    Users.builder()
-                        .username(this.username)
-                        .password(this.password)
-                        .build()
+                        Users.builder()
+                                .username(this.username)
+                                .password(this.password)
+                                .build()
                 )
                 .build();
     }

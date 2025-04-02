@@ -7,13 +7,18 @@ import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Getter @Setter
-@AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateBookRequest {
     @NotBlank(message = "name cannot be empty.")
-    @Column(unique = true,nullable = false)
+    @Column(unique = true, nullable = false)
     private String name;
     @NotNull(message = "genre cannot be empty.")
     private genre_enum genre;
@@ -26,9 +31,9 @@ public class CreateBookRequest {
     @NotBlank(message = "Invalid email address.")
     private String author_email;
 
-    public Book to(){
+    public Book to() {
         //here we have to build both book objects and  author objects , so book can take the author object
-        Author author=Author.builder()
+        Author author = Author.builder()
                 .name(this.author_name)
                 .email(this.author_email)
                 .build();

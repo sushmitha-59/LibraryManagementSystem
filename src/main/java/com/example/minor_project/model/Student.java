@@ -1,34 +1,42 @@
 package com.example.minor_project.model;
 
 import com.example.minor_project.DTO.StudentResponse;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import java.io.Serializable;
-import java.util.*;
 
-@Getter @Setter
-@AllArgsConstructor @NoArgsConstructor
-@Entity @Builder
+import java.io.Serializable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Builder
 public class Student implements Serializable {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id; //this will be the primary key
     //student:book==>1:n , we have to declare list of books here to store those n quantities
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    @ToString.Exclude    private List<Book> books;
+    @ToString.Exclude
+    private List<Book> books;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    @ToString.Exclude    private List<Transaction> transactions;
+    @ToString.Exclude
+    private List<Transaction> transactions;
 
     //one to one mapping with user table
     @OneToOne
     @JoinColumn
-    @ToString.Exclude    private Users user;
+    @ToString.Exclude
+    private Users user;
 
     private Integer age;
     private String name;
@@ -43,16 +51,16 @@ public class Student implements Serializable {
     private Date UpdatedOn;
 
     //model to response dto conversion
-    public StudentResponse to(){
-        Map<Integer,String> books2=new HashMap<>();
-        if(this.getBooks() !=null){
-            for(Book Book:this.getBooks()){
-                books2.put(Book.getId(),Book.getName());
+    public StudentResponse to() {
+        Map<Integer, String> books2 = new HashMap<>();
+        if (this.getBooks() != null) {
+            for (Book Book : this.getBooks()) {
+                books2.put(Book.getId(), Book.getName());
             }
         }
-        Map<String, String> txn2=new HashMap<>();
-        if(this.getTransactions() !=null){
-            for(Transaction txn : this.getTransactions()){
+        Map<String, String> txn2 = new HashMap<>();
+        if (this.getTransactions() != null) {
+            for (Transaction txn : this.getTransactions()) {
                 txn2.put(txn.getTransactionId(), String.valueOf(txn.getTransactionStatus()));
             }
         }

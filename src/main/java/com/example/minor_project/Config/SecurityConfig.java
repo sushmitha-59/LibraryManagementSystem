@@ -43,15 +43,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-            auth -> auth
-                    .requestMatchers("/student/info").hasAuthority(Constants.STUDENT_SELF_INFO_AUTHORITY)
-                    .requestMatchers("/admin/**").hasAuthority(Constants.CREATE_ADMIN)
-                    .requestMatchers("/book/create", "/book/delete/{id}").hasAuthority(Constants.CREATE_BOOK)
-                    .requestMatchers("/book/get", "/book/getAll").hasAnyAuthority(Constants.STUDENT_BOOKS_VIEW,Constants.ADMIN_BOOKS_VIEW)
-                    .requestMatchers("/student/listAll", "/student/search", "/student/search2", "/student/delete/**", "/student/update/**").hasAuthority(Constants.ADMIN_AUTHORITY_FOR_STUDENT)
-                    .requestMatchers(HttpMethod.POST, "/student/create").permitAll()  //for only authenticated people
-                    .requestMatchers("/transaction/initiate").hasAuthority(Constants.INITIATE_TRANSACTION)
-                    .requestMatchers("/csv/upload").hasAuthority(Constants.UPLOAD_CSV)
+                        auth -> auth
+                                .requestMatchers("/student/info").hasAuthority(Constants.STUDENT_SELF_INFO_AUTHORITY)
+                                .requestMatchers("/admin/**").hasAuthority(Constants.CREATE_ADMIN)
+                                .requestMatchers("/book/create", "/book/delete/{id}").hasAuthority(Constants.CREATE_BOOK)
+                                .requestMatchers("/book/get", "/book/getAll").hasAnyAuthority(Constants.STUDENT_BOOKS_VIEW, Constants.ADMIN_BOOKS_VIEW)
+                                .requestMatchers("/student/listAll", "/student/search", "/student/search2", "/student/delete/**", "/student/update/**").hasAuthority(Constants.ADMIN_AUTHORITY_FOR_STUDENT)
+                                .requestMatchers(HttpMethod.POST, "/student/create").permitAll()  //for only authenticated people
+                                .requestMatchers("/transaction/initiate").hasAuthority(Constants.INITIATE_TRANSACTION)
+                                .requestMatchers("/csv/upload").hasAuthority(Constants.UPLOAD_CSV)
                 )
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())

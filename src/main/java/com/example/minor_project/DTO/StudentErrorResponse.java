@@ -4,10 +4,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Builder @Getter @Setter
+@Builder
+@Getter
+@Setter
 public class StudentErrorResponse {
     private String ErrorResponse;
-    public StudentErrorResponse(String error){
-        ErrorResponse=error;
+
+    public StudentErrorResponse(String error) {
+        ErrorResponse = error;
     }
 }

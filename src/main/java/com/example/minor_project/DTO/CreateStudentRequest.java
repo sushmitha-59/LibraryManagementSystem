@@ -8,11 +8,14 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 
-@AllArgsConstructor @NoArgsConstructor
-@Getter @Setter
-@Builder @ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
+@ToString
 public class CreateStudentRequest {
-    @Min(value = 10,message = "Age should be more than 10")
+    @Min(value = 10, message = "Age should be more than 10")
     private Integer age;
     @NotBlank(message = "Name should not be blank.")
     private String name;
@@ -28,7 +31,8 @@ public class CreateStudentRequest {
     private String email;
     @NotBlank(message = "UserName should not be blank.")
     private String username;
-    public Student to(){
+
+    public Student to() {
         return Student.builder()
                 .age(this.age)
                 .name(this.name)

@@ -1,4 +1,5 @@
 package com.example.minor_project.Controller;
+
 import com.example.minor_project.DTO.*;
 import com.example.minor_project.Service.StudentService;
 import com.example.minor_project.model.Student;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +27,9 @@ public class StudentController {
     private StudentService studentService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createStudent(@RequestBody @Valid CreateStudentRequest createStudent_dto){
-        try{
-            StudentResponse stu=studentService.createStudent(createStudent_dto.to()).to();
+    public ResponseEntity<?> createStudent(@RequestBody @Valid CreateStudentRequest createStudent_dto) {
+        try {
+            StudentResponse stu = studentService.createStudent(createStudent_dto.to()).to();
             stu.setMessage("Student got created successfully");
             return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(stu);
         } catch (Exception e) {
@@ -43,10 +45,10 @@ public class StudentController {
 
     //only admin can do this
     @GetMapping("/listAll")
-    public SearchStudentResponse getALLStudents(){
-        List<Student> students=studentService.getALlStudents();
-        List<StudentResponse> students_list=new ArrayList<StudentResponse>();
-        for(Student student : students){
+    public SearchStudentResponse getALLStudents() {
+        List<Student> students = studentService.getALlStudents();
+        List<StudentResponse> students_list = new ArrayList<StudentResponse>();
+        for (Student student : students) {
             students_list.add(student.to());
         }
         return new SearchStudentResponse(students_list);
@@ -54,9 +56,9 @@ public class StudentController {
 
     //findById , findStudentByEmail , findStudentByRollNo ==>return single student
     @PostMapping("/search")
-    public ResponseEntity<?> findBYIdEmailRollNumber(@RequestBody @Valid SearchStudentRequest studentRequest){
+    public ResponseEntity<?> findBYIdEmailRollNumber(@RequestBody @Valid SearchStudentRequest studentRequest) {
         try {
-            StudentResponse student = studentService.searchStudentByIdEmailRoll(studentRequest.getSearchKey(),studentRequest.getSearchValue());
+            StudentResponse student = studentService.searchStudentByIdEmailRoll(studentRequest.getSearchKey(), studentRequest.getSearchValue());
             return ResponseEntity
                     .status(HttpStatus.FOUND)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -70,11 +72,11 @@ public class StudentController {
 
     //findByName , findByAge returns list of students
     @GetMapping("/search2")
-    public ResponseEntity<?> findByNameAge(@RequestParam  String searchKey,@RequestParam  String searchValue){
+    public ResponseEntity<?> findByNameAge(@RequestParam String searchKey, @RequestParam String searchValue) {
         try {
-            List<Student> students =studentService.searchStudentByNameAge(searchKey,searchValue);
-            List<StudentResponse> studentResponses=new ArrayList<StudentResponse>();
-            for(Student student : students){
+            List<Student> students = studentService.searchStudentByNameAge(searchKey, searchValue);
+            List<StudentResponse> studentResponses = new ArrayList<StudentResponse>();
+            for (Student student : students) {
                 studentResponses.add(student.to());
             }
             return ResponseEntity
@@ -92,13 +94,13 @@ public class StudentController {
     public ResponseEntity<?> student_self_info() throws Exception {
         //security context holder contains current user current session details
         System.out.println("Starting info endpoint");
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-        if(authentication ==null){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
             throw new Exception("USER is not authenticated. ");
         }
-        System.out.println("Authentication is " +authentication.toString());
-        Users user=(Users) authentication.getPrincipal();
-        Integer id=user.getStudent().getId();
+        System.out.println("Authentication is " + authentication.toString());
+        Users user = (Users) authentication.getPrincipal();
+        Integer id = user.getStudent().getId();
         try {
             StudentResponse student = studentService.searchStudentByIdEmailRoll("id", String.valueOf(id));
             return ResponseEntity.status(HttpStatus.FOUND)
@@ -112,22 +114,22 @@ public class StudentController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable String id){
-        try{
+    public ResponseEntity<String> deleteStudent(@PathVariable String id) {
+        try {
             studentService.deleteStudent(Integer.parseInt(id));
             return ResponseEntity.status(HttpStatus.OK).body("Student got deleted successfully");
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
     }
 
     @PatchMapping("/update/{id}")
-    public ResponseEntity<String> updateStudent(@PathVariable String id , @RequestParam String key ,@RequestParam String value ){
-        try{
-            studentService.updateStudent(Integer.valueOf(id),key,value);
+    public ResponseEntity<String> updateStudent(@PathVariable String id, @RequestParam String key, @RequestParam String value) {
+        try {
+            studentService.updateStudent(Integer.valueOf(id), key, value);
             return ResponseEntity.status(HttpStatus.OK).body("Student got Updated successfully");
-        }catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

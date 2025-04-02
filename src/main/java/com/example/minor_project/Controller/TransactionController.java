@@ -19,12 +19,11 @@ public class TransactionController {
     TransactionService transactionService;
 
     @PostMapping("/initiate")
-    public ResponseEntity<String> issueTransaction(@RequestBody @Valid IssueTransactionRequest issueTransactionRequest){
-        try{
+    public ResponseEntity<String> issueTransaction(@RequestBody @Valid IssueTransactionRequest issueTransactionRequest) {
+        try {
             String TransactionId = transactionService.initiateTxn(issueTransactionRequest);
             return ResponseEntity.ok("TransactionId is : " + TransactionId);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

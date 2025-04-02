@@ -6,7 +6,8 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor @Builder
+@NoArgsConstructor
+@Builder
 //generic class , searchKey can be genre, name, id , author , searchValue will be associate values
 //(genre,CSE),(author,bjarne),(id,1),(name,cpp)
 public class getBookRequest {

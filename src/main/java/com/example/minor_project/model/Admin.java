@@ -6,21 +6,25 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import java.util.Date;
 import java.util.List;
 
 @Builder
-@Getter @Setter
-@AllArgsConstructor @NoArgsConstructor
-@Entity @ToString
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@ToString
 public class Admin {
     @Id //every table should have primary key , even if you don't need it
-    @GeneratedValue(strategy= GenerationType.IDENTITY) //identity will be of integer type
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //identity will be of integer type
     private Integer id; //this will be the primary key
 
     private String name;
 
-    @Column(unique = true ,nullable = false) //if we don't want duplicate emails in table , we can mention this
+    @Column(unique = true, nullable = false) //if we don't want duplicate emails in table , we can mention this
     private String email;  //it doesn't mean that this is primary key
 
     //admin:transaction = 1:n , so create a list to save those n transactions
