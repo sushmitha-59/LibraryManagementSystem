@@ -2,27 +2,47 @@ package com.example.minor_project.Config;
 
 import com.example.minor_project.Service.CustomUserDetailsService;
 import com.example.minor_project.Utilities.Constants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity  //add dependency spring-boot-starter-security
 public class SecurityConfig {
 
+    //    @Bean
+//    public UserDetailsService CustomDetailsService() {
+//        return new CustomUserDetailsService();
+//    }
+    //when we are working with jwt , we need to implement authentication Manager
+//    @Bean
+//    public UserDetailsService customUserDetailsService() {
+//        return new CustomUserDetailsService(); // no autowiring here
+//    }
     @Bean
-    public UserDetailsService CustomDetailsService() {
-        return new CustomUserDetailsService();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
+
+    @Autowired
+    CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
+    JwtFilter jwtFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -31,9 +51,9 @@ public class SecurityConfig {
 
     //we have to tell DaoAuthenticationProvider to which service it should use
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
+    public AuthenticationProvider AuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(CustomDetailsService());
+        daoAuthenticationProvider.setUserDetailsService(customUserDetailsService);
         return daoAuthenticationProvider;
     }
 
@@ -44,6 +64,7 @@ public class SecurityConfig {
         return httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth -> auth
+                                .requestMatchers("/", "/login", "/oauth2/**", "/registerStudent").permitAll()
                                 .requestMatchers("/student/info").hasAuthority(Constants.STUDENT_SELF_INFO_AUTHORITY)
                                 .requestMatchers("/admin/**").hasAuthority(Constants.CREATE_ADMIN)
                                 .requestMatchers("/book/create", "/book/delete/{id}").hasAuthority(Constants.CREATE_BOOK)
@@ -52,9 +73,11 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/student/create").permitAll()  //for only authenticated people
                                 .requestMatchers("/transaction/initiate").hasAuthority(Constants.INITIATE_TRANSACTION)
                                 .requestMatchers("/csv/upload").hasAuthority(Constants.UPLOAD_CSV)
+                                .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)//telling spring to go through this filter before default filter class i.e UsernamePasswordAuthenticationFilter
                 .build();
     }
 }

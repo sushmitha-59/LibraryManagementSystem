@@ -36,7 +36,6 @@ public class AuthoritiesProvider {
         }
 
         return authoritiesMap.getOrDefault(userType, Constants.INVALID_USER);
-
         //"STUDENT_SELF_INFO::MAKE_PAYMENT::READ_BOOK"
     }
 }

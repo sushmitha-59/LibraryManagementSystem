@@ -51,7 +51,7 @@ public class StudentControllerTest {
                 .name("Sushmitha")
                 .email("validemail@example.com")
                 .age(23)
-                .roll_number("19uec047")
+                .rollNumber("19uec047")
                 .build();
         when(mockstudentService.createStudent(any(Student.class))).thenReturn(new Student());
         //mockMvc perform the call , it needs api ,contentType mediatype json/xml and content
