@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class AdminController {
             Adminservice.CreateAdmin(create_admin_dto.to());
             return ResponseEntity.status(HttpStatus.CREATED).body("Admin got created/updated successfully");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getCause().getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getCause()!=null?e.getCause().getLocalizedMessage(): e.getMessage());
         }
     }
 
@@ -46,8 +45,8 @@ public class AdminController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(adminResponses);
         } catch (Exception e) {
-            log.error("Admin get All requests failure : {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getCause().getMessage());
+            //log.error("Admin get All requests failure : {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getCause()!=null?e.getCause().getLocalizedMessage(): e.getMessage());
         }
     }
 
@@ -58,7 +57,8 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.FOUND).contentType(MediaType.APPLICATION_JSON)
                     .body(admin.to());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Admin get request failed : " + e.getCause().getMessage());
+            String msg=e.getCause()!=null?e.getCause().getLocalizedMessage(): e.getMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Admin get request failed : " + msg );
         }
     }
 }

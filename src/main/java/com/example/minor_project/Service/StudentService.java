@@ -36,7 +36,7 @@ public class StudentService {
         try {
             //we already built the user object in the student DTO
             Users user = student.getUser();
-            //set the authorities to the above user
+            //set the rawauthorities to the above user
             user = CustomUserDetailsService.SaveUser(Constants.STUDENT_USER, user);
             //check if the user is valid
             if (user.getId() == null) {

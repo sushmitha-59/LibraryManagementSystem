@@ -47,7 +47,7 @@ public class StudentServiceTest {
                 .build();
 
         when(mockStudentRepo.findByEmail(searchValue)).thenReturn(Expectedstudent);
-        Student ActualWeGot=mockStudentService.searchStudentByIdEmailRoll(searchKey,searchValue);
+        Student ActualWeGot=(mockStudentService.searchStudentByIdEmailRoll(searchKey,searchValue)).to();
         assertEquals(Expectedstudent,ActualWeGot); //test will fail , if these both are not equal
     }
 
@@ -64,7 +64,7 @@ public class StudentServiceTest {
                 .build();
 
         when(mockStudentRepo.findById(searchValue)).thenReturn(Optional.ofNullable(Expectedstudent));
-        Student ActualWeGot=mockStudentService.searchStudentByIdEmailRoll(searchKey,searchValue.toString());
+        Student ActualWeGot=(mockStudentService.searchStudentByIdEmailRoll(searchKey,searchValue.toString())).to();
         assertEquals(Expectedstudent,ActualWeGot); //test will fail , if these both are not equal
     }
     @Test
@@ -80,7 +80,7 @@ public class StudentServiceTest {
                 .build();
 
         when(mockStudentRepo.findByRollNumber(searchValue)).thenReturn(Expectedstudent);
-        Student ActualWeGot=mockStudentService.searchStudentByIdEmailRoll(searchKey,searchValue);
+        Student ActualWeGot=(mockStudentService.searchStudentByIdEmailRoll(searchKey,searchValue)).to();
         assertEquals(Expectedstudent,ActualWeGot); //test will fail , if these both are not equal
     }
 
